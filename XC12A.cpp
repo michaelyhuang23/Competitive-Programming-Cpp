@@ -58,9 +58,13 @@ llong dist(llong xl, llong xr, llong yu, llong yd){
 
 void solve_side(function<bool(llong, llong, llong, llong)> cond){
 	llong l = 0, r = n-1;
-	llong prevxl = -1;
+	llong prevxl = -inf;
+	llong prevr = n-1; 
 	llong prevxr = inf;
-	set<llong> ly, ry; 
+	set<llong> ly, ry, prevry; 
+	ly.insert(0);
+	ry.insert(0);
+	prevry.insert(0);
 	for(l=0;l<n;l++){
 		llong xl = ptrs[l].first;
 		llong yl = ptrs[l].second;
@@ -73,27 +77,60 @@ void solve_side(function<bool(llong, llong, llong, llong)> cond){
 			if(ly.begin() != ly.end())
 				minyl = *ly.begin(); // what if we don't have smth?
 			while(r>=0){
-				llong xr = ptrs[r].first;
-				llong yr = ptrs[r].second;
-				if(xr<0) break;
-				if(xr < prevxr){
-					// now we deail with xr
-					llong maxyr = 0, minyr = 0;
-					if(ry.rbegin() != ry.rend())
-						maxyr = *ry.rbegin();
-					if(ry.begin() != ry.end())
-						minyr = *ry.begin(); // what if we don't have smth
-//					deb(mp(xl, xr))
-//					deb(ry)
-//					deb(mp(maxyl, minyl))
-//					deb(mp(maxyr, minyr))
-					// maybe we need to run from both sides?
-					minn = min(minn,dist(xl, xr, max(maxyl, maxyr), min(minyl, minyr)));
-					if(cond(maxyr, maxyl, minyr, minyl)) break; // always under shadow
-					prevxr = xr;
+				llong xr = ptrs[r].first, yr = ptrs[r].second;
+				while(xr ==  prevxr) {
+					ry.insert(yr);
 					r--;
-				}else r--;
-				ry.insert(yr);
+					if(r<0) break;
+					xr = ptrs[r].first;
+					yr = ptrs[r].second;
+				}// ends on the first that isn't
+
+				if(xr<0 || r<0) break;
+
+				llong maxyr = 0, minyr = 0;
+				if(ry.rbegin() != ry.rend())
+					maxyr = *ry.rbegin();
+				if(ry.begin() != ry.end())
+					minyr = *ry.begin(); // what if we don't have smth
+
+				minn = min(minn,dist(xl, xr, max(maxyl, maxyr), min(minyl, minyr)));
+
+				// deb(mp(l,r))
+				// deb(mp(xl,xr))
+				// deb(mp(max(maxyl,maxyr), min(minyl,minyr)))
+				llong prevxrt = xr;
+				set<llong> prevryt = ry;
+				llong prevrt = r;
+				while(xr == prevxrt){
+					ry.insert(yr);
+					r--;
+					if(r<0) break;
+					xr = ptrs[r].first;
+					yr = ptrs[r].second;
+				}
+
+				maxyr = 0; minyr = 0;
+				if(ry.rbegin() != ry.rend())
+					maxyr = *ry.rbegin();
+				if(ry.begin() != ry.end())
+					minyr = *ry.begin(); // what if we don't have smth
+				minn = min(minn,dist(xl, xr, max(maxyl, maxyr), min(minyl, minyr)));
+
+				// deb(mp(l,r))
+				// deb(mp(xl,xr))
+				// deb(mp(max(maxyl,maxyr), min(minyl,minyr)))
+
+				if(cond(maxyr, maxyl, minyr, minyl)) {
+					xr = prevxrt;
+					ry = prevryt;
+					r = prevrt;
+					break; // always under shadow
+				}else{
+					prevxr = xr;
+					prevry = ry;
+					prevr = r;
+				}
 			}
 			prevxl = xl;
 		}
@@ -130,7 +167,8 @@ void solve(){
     set<llong> ly;
 	vector<llong> ymax(n,inf);
 	vector<llong> ymin(n,inf);
-	llong prevx = -1;
+	//deb(ptrs)
+	llong prevx = -inf;
 	for(int i=0;i<n;i++){
 		llong x = ptrs[i].first;
 		llong y = ptrs[i].second;
@@ -158,9 +196,16 @@ void solve(){
 
 			ymax[i] = topd;
 			ymin[i] = botd;
+		}else{
+			if(i>0){
+				ymax[i] = ymax[i-1];
+				ymin[i] = ymin[i-1];
+			}
 		}
 		ly.insert(y);
 	}
+	//deb(ymin)
+	//deb(ymax)
 
 	set<llong> ry;
 	prevx = inf;
@@ -190,6 +235,10 @@ void solve(){
 			auto yb = upper_bound(ymax.begin(), ymax.end(), botd);
 			int ybi = distance(ymax.begin(), yb);
 			// good for exclusive upperbound
+
+			// deb(i)
+			// deb(mp(lbi, tbi))
+			// deb(mp(xbi, ybi))
 
 			if(tbi<lbi){
 				{// [0][0]
