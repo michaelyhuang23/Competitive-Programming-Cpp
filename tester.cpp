@@ -13,13 +13,23 @@ typedef long long llong;
 #define pb push_back
 #define mp make_pair
 #define mt make_tuple
+#define inf 1000000000
 
 
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	int n = 11, k = 36;
-	cout<<1<<endl;
-	int first = rand()%n+1;
-	cout<<first<<" "<<first+rand()%k+1<<endl;
+	int n = 100000, m = 100000;
+	cout<<n<<endl;
+	for(int i=0;i<n;i++){
+		cout<<rand()%inf<<" ";
+	}
+	cout<<endl;
+	cout<<m<<endl;
+	for(int i=0;i<m;i++){
+		int type = rand()%2;
+		int l = rand()%n+1;
+		int r = rand()%n+1;
+		cout<<type<<" "<<l<<" "<<r<<endl;
+	}
 }
