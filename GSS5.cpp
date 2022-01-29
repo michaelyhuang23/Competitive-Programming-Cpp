@@ -1,6 +1,6 @@
 #include<bits/stdc++.h>
 
-#include "debughelp.hpp"
+//#include "debughelp.hpp"
 
 using namespace std;
 
@@ -105,36 +105,34 @@ struct segtree{
 
 
 
-int tt;
-int N,M;
+llong tt;
+llong N,M;
 vector<llong> A;
 vector<llong> pref;
 void solve(){
 	cin >> N;
 	A = vector<llong>(N);
 	pref = vector<llong>(N);
-	for(int i=0;i<N;i++) cin >> A[i];
+	for(llong i=0;i<N;i++) cin >> A[i];
 	pref[0] = A[0];
-	for(int i=1;i<N;i++) pref[i]=pref[i-1]+A[i];
+	for(llong i=1;i<N;i++) pref[i]=pref[i-1]+A[i];
 	cin >> M;
 	segtree<NodeP> ptree(A,N);
 	segtree<NodeS> stree(A,N);
 	segtree<NodeN> ntree(A,N);
 
 	//deb(stree.query(2,3))
-	for(int i=0;i<M;i++){
-		int x1, y1, x2, y2; cin >> x1 >> y1 >> x2 >> y2;
+	for(llong i=0;i<M;i++){
+		llong x1, y1, x2, y2; cin >> x1 >> y1 >> x2 >> y2;
 		x1--; y1--; x2--; y2--;
-		llong maxx = 0;
+		llong maxx = -inf;
 		if(x2<=y1) {
 			maxx = max(maxx,ntree.query(x2, y1));
-			deb(ntree.query(x2,y1));
-			if(x1 != x2) maxx = max(maxx, stree.query(x1,x2-1) + ptree.query(x2,y1));
-			deb(stree.query(x1,x2-1) + ptree.query(x2,y1))
-			if(y1 != y2) maxx = max(maxx, ptree.query(y1+1,y2) + stree.query(x2,y1));
-			deb(ptree.query(y1+1,y2) + stree.query(x2,y1))
-			if(x1 != x2 && y1 != y2) maxx = max(maxx, stree.query(x1,x2-1) + ptree.query(y1+1,y2) + pref[y1] - pref[x2-1]);
-			deb(stree.query(x1,x2-1) + ptree.query(y1+1,y2)) // add middle!
+			//deb(ntree.query(x2,y1));
+			if(x1 != x2) maxx = max(maxx, stree.query(x1,x2-1) + ptree.query(x2,y2));
+			//deb(stree.query(x1,x2-1) + ptree.query(x2,y2))
+			if(y1 != y2) maxx = max(maxx, ptree.query(y1+1,y2) + stree.query(x1,y1));
+			//deb(ptree.query(y1+1,y2) + stree.query(x1,y1))
 		}else{
 			maxx = max(maxx,pref[x2-1] - pref[y1] + stree.query(x1, y1) + ptree.query(x2, y2));
 		}
