@@ -7,34 +7,32 @@ typedef long long llong;
 #define mp make_pair
 #define pb push_back
 #define print(x) cout<<x<<endl
-#define inf 20000000000000005LL
+#define inf 1000000000000LL
 
 llong N, K, W;
 vector<llong> values;
 
-int cc;
-
 vector<llong> solve(llong k, llong a, llong b){ // a, b are weights
-	cc++;
-	vector<llong> ret(b-a+1,-inf);
 	if(k == 1){
-		//print(b-a);
-		//deb(mt(k,a,b))
+		vector<llong> ret(b-a+1, -inf);
 		for(llong w=a;w<=b;w++) ret[w-a]=values[w];
-		//deb(mt(k,a,b))
-		//deb(ret)
 		return ret;
-	} 
+	}
 	if(k%2==0){
-		//print(b-a);
 		llong st = max(0LL, (a-N)/2); // maybe add 1 to both ranges?
-		llong ed = min((b+N)/2+(b+N)%2, W);
-		//deb(mt(k,a,b))
+		llong ed = min((b+N)/2+(((b+N)%2==1)?1:0), W);
 		vector<llong> sol = solve(k/2, st, ed); 
+		vector<llong> ret(b-a+1, -inf);
 		for(llong w=a; w<=b; w++){
-			llong hw = w>>1;
-			llong ll, rr;
-			for(llong i=0; i<=N/2 && (ll=hw-i)>=0 && (rr=hw + (w%2) + i) <= W; i++){
+			for(llong i=0; i<=N/2; i++){
+				llong ll = w/2 - i;
+				if(ll<0) continue;
+				llong rr = w/2 + ((w%2)?1:0) + i;
+				if(rr>W) continue;
+				// assert(ll + rr == w);
+				// assert(ll >= st);
+				// assert(rr <= ed);
+				//deb(mt(ll,rr,sol[ll-st]+sol[rr-st]))
 				ret[w-a] = max(ret[w-a], sol[ll-st] + sol[rr-st]);
 			}
 		}
@@ -42,15 +40,12 @@ vector<llong> solve(llong k, llong a, llong b){ // a, b are weights
 		//deb(ret)
 		return ret;
 	}else{
-		//print(b-a);
-		//deb(mt(k,a,b))
-		llong st = max(0LL,a - N);
-		llong ed = b-1;
-		vector<llong> sols = solve(k-1, st, ed); 
+		vector<llong> ret(b-a+1, -inf);
+		vector<llong> sols = solve(k-1, 0, b-1);
 		for(llong w=a; w<=b; w++){
-			for(llong i=1; i<=N && i<=w-st; i++){
+			for(llong i=1; i<=N && i<=w; i++){
 				//deb(mt(w,sols[w-i],values[i]))
-				ret[w-a] = max(ret[w-a], sols[w-i-st] + values[i]);
+				ret[w-a] = max(ret[w-a], sols[w-i] + values[i]);
 			}
 		}
 		//deb(mt(k,a,b))
@@ -61,12 +56,10 @@ vector<llong> solve(llong k, llong a, llong b){ // a, b are weights
 
 void solution(){
 	cin >> N >> K >> W;
-	cc = 0;
 	values = vector<llong>(N*2,-inf);
 	for(llong i=1;i<=N;i++) cin >> values[i];
 	vector<llong> sol = solve(K, W, W);
 	print(sol[0]);
-	//print(cc);
 }
 
 int main(){

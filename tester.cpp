@@ -16,15 +16,15 @@ typedef long long llong;
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	int n = 50000;
-	cout<<n<<endl;
-	int range = 50000;
+	llong n = 1000;
+	llong k = 1000000;
+	llong w = rand()%(k*n-k)+k;
+	cout<<n<<" "<<k<<" "<<w<<endl;
+	llong range = 1000000000;
 	
-	for(int i=0;i<n;i++){
-		int start = rand()%range+1;
-		int end = rand()%range+1;
-		if(end<start) {i--; continue;}
-		int dur = rand()%(end-start+1)+1;
-		cout<<start<<" "<<end<<" "<<dur<<endl;
+	for(llong i=0;i<n;i++){
+		llong val = rand()%range+1;
+		cout<<val<<" ";
 	}
+	cout<<endl;
 }
