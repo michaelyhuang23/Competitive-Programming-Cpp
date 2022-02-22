@@ -16,7 +16,7 @@ typedef long long llong;
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	llong n = 1000;
+	llong n = 100;
 	llong k = 1000000;
 	llong w = rand()%(k*n-k)+k;
 	cout<<n<<" "<<k<<" "<<w<<endl;

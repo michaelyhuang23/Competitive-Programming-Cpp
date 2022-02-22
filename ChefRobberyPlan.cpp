@@ -26,15 +26,14 @@ vector<llong> solve(llong k, llong a, llong b){ // a, b are weights
 		return ret;
 	} 
 	if(k%2==0){
-		//print(b-a);
-		llong st = max(0LL, (a-N)/2); // maybe add 1 to both ranges?
-		llong ed = min((b+N)/2+(b+N)%2, W);
+		llong st = max(0LL, (a-N+1)/2 + (a-N+1)%2); // maybe add 1 to both ranges?
+		llong ed = min((b+N-1)/2, W);
+
 		//deb(mt(k,a,b))
 		vector<llong> sol = solve(k/2, st, ed); 
 		for(llong w=a; w<=b; w++){
-			llong hw = w>>1;
 			llong ll, rr;
-			for(llong i=0; i<=N/2 && (ll=hw-i)>=0 && (rr=hw + (w%2) + i) <= W; i++){
+			for(llong i=0; i<=N && (ll=(w-i+1)/2 + (w-i+1)%2)>=0 && (rr=(w+i-1)/2) <= W; i++){
 				ret[w-a] = max(ret[w-a], sol[ll-st] + sol[rr-st]);
 			}
 		}
