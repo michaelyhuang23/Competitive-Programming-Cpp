@@ -16,20 +16,29 @@ typedef long long llong;
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	llong n = 500;
-	print(n);
+	llong n = 10;
 
-	llong range = 500;
-	llong vrange = 1000000;
+	cout<< n << " " << 1 <<endl;
 
+	llong range = 2*n;
+
+	vector<int> Xs(2*n); 
+	for(int i=1;i<=2*n;i++) Xs[i-1] = i;
+	random_shuffle(Xs.begin(), Xs.end());
+
+	vector<int> Ys(2*n); 
+	for(int i=1;i<=2*n;i++) Ys[i-1] = i;
+	random_shuffle(Ys.begin(), Ys.end());
+
+	int x = 0, y = 0;
 	for(int i=0;i<n;i++){
-		llong k = rand()%range + 1;
-		print(k);
-		for(int j=0;j<k;j++){
-			llong x = rand()%vrange - vrange/2;
-			llong y = rand()%vrange - vrange/2;
-			cout<<x<<" "<<y<<endl;
-		}
+		int x1 = Xs[x++];
+		int x2 = Xs[x++];
+		int y1 = Ys[y++];
+		int y2 = Ys[y++];
+		if(x1>x2) swap(x1,x2);
+		if(y1>y2) swap(y1,y2);
+		cout<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<endl; 
 	}
 	
 }
