@@ -12,33 +12,40 @@ typedef long long llong;
 #define inf 1000000000
 #define print(x) cout<<x<<endl
 
-
+int random(int st, int ed){
+	if(st==ed) return st;
+	return rand()%(ed-st+1)+st;
+}
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	llong n = 10;
+	int n = 100000;
+	int m = 100000;
 
-	cout<< n << " " << 1 <<endl;
+	cout<<n<<" "<<m+1<<endl;
 
-	llong range = 2*n;
-
-	vector<int> Xs(2*n); 
-	for(int i=1;i<=2*n;i++) Xs[i-1] = i;
-	random_shuffle(Xs.begin(), Xs.end());
-
-	vector<int> Ys(2*n); 
-	for(int i=1;i<=2*n;i++) Ys[i-1] = i;
-	random_shuffle(Ys.begin(), Ys.end());
-
-	int x = 0, y = 0;
-	for(int i=0;i<n;i++){
-		int x1 = Xs[x++];
-		int x2 = Xs[x++];
-		int y1 = Ys[y++];
-		int y2 = Ys[y++];
-		if(x1>x2) swap(x1,x2);
-		if(y1>y2) swap(y1,y2);
-		cout<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<endl; 
+	for(int i=2;i<=n;i++){
+		int p = random(1, i-1);
+		cout<<p << " "<<i<<endl;
 	}
-	
+
+	vector<int> nodes(n);
+	iota(nodes.begin(), nodes.end(), 1);
+	random_shuffle(nodes.begin(), nodes.end());
+	for(int i=0;i<m;i++){
+		cout<<"1 "<<nodes[i]<<endl;
+	}
+
+	cout<<"2 "<<random(1,n)<<endl;
 }
+
+
+/*
+
+generate tree:
+for(int i=1;i<n;i++){
+		int p = random(0, i-1);
+		cout<<p << " "<<i<<endl;
+	}
+
+*/
