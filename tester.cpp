@@ -19,32 +19,29 @@ int random(int st, int ed){
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	int n = 100000;
-	int m = 100000;
-
-	cout<<n<<" "<<m+1<<endl;
-
-	for(int i=2;i<=n;i++){
-		int p = random(1, i-1);
-		cout<<p << " "<<i<<endl;
+	int n = 3, m=3;
+	cout<<n<<" "<<m<<endl;
+	int w = 2;
+	for(int r=0;r<n;r++){
+		for(int c=0;c<m-1;c++){
+			cout<<random(1,w)<<" ";
+		}
+		cout<<endl;
 	}
 
-	vector<int> nodes(n);
-	iota(nodes.begin(), nodes.end(), 1);
-	random_shuffle(nodes.begin(), nodes.end());
-	for(int i=0;i<m;i++){
-		cout<<"1 "<<nodes[i]<<endl;
+	for(int i=1;i<=m;i++){
+		int p = random(1, n);
+		cout<<p<<" "<<random(1,cr)<<endl;
 	}
-
-	cout<<"2 "<<random(1,n)<<endl;
 }
+
 
 
 /*
 
 generate tree:
-for(int i=1;i<n;i++){
-		int p = random(0, i-1);
+for(int i=2;i<=n;i++){
+		int p = random(1, i-1);
 		cout<<p << " "<<i<<endl;
 	}
 

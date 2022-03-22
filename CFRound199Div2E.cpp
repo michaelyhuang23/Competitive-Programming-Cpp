@@ -21,17 +21,14 @@ vector<int> parent;
 vector<int> reddist;
 vector<int> depth;
 vector<vector<int>> dist2ancestor;
-int cc = 0;
 void get_size(int cur, int par){
-	//subtreesize[cur] = 0;
+	subtreesize[cur] = 0;
 	for(int son : adj[cur]){
 		if(son == par || masks[son]) continue;
 		get_size(son, cur);
 		subtreesize[cur] += subtreesize[son];
 	}
 	subtreesize[cur]++;
-	cc += 100000000;
-	assert(subtreesize[cur]<=inf);
 }
 
 int find_centroid(int cur, int par, int size){
