@@ -126,3 +126,8 @@ struct segtree{
 		return Node::merge(ll,rr).ans();
 	}
 };
+
+
+
+
+

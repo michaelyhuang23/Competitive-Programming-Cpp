@@ -1,15 +1,177 @@
 #include<bits/stdc++.h>
 
 using namespace std;
+typedef long long llong;
+#define pb push_back
+#define mp make_pair
+#define mt make_tuple
+#define inf 1000000000000LL
+
+struct Node0{
+    int val, pd;
+    Node0(int val_):val(val_),pd(0){}
+    Node0():val(0),pd(0){}
+    static Node0 merge(Node0& ll, Node0& rr){
+        return Node0(ll.val+rr.val);
+    }
+    void pull_up(Node0& ll, Node0& rr){
+        (*this) = merge(ll,rr);
+    }
+    void update(int val_){
+        val+=val_;
+        pd+=val_;
+    }
+    void push_down(Node0& ll, Node0& rr){
+        ll.update(pd);
+        rr.update(pd);
+        pd = 0;
+    }
+    int ans(){return val;}
+};
+
+
+struct Node1{
+    int val, sum, ts, te;
+    Node1(int val_, int ts_, int te_):val(val_),sum(val_),ts(ts_),te(te_){}
+    Node1(int ts_, int te_):val(0),sum(0),ts(ts_),te(te_){}
+    Node1(){}
+    static Node1 merge(Node1& ll, Node1& rr){
+        int nts = min(ll.ts, rr.ts);
+        int nte = max(ll.te, rr.te);
+        int nsum = ll.sum + rr.sum;
+        int nval = ll.val + rr.val + (ll.te-ll.ts+1)*rr.sum;
+        Node1 mm(nval,nts,nte);
+        mm.sum=nsum;
+        return mm;
+    }
+    void pull_up(Node1& ll, Node1& rr){
+        (*this) = merge(ll,rr);
+    }
+    void update(int val_){
+        val+=val_*0;
+        sum+=val_;
+    }
+    int ans(){return val;}
+};
+
+
+
+
+template<typename Node>
+struct segtreeRecurse{
+    static int pow_up(int num){
+        for(int i=0;i<65;i++) if(1<<i >= num) return 1<<i;
+        return -1;
+    }
+    vector<Node> tree;
+    int n;
+    segtreeRecurse(int size){
+        n = pow_up(size);
+        tree = vector<Node>(n*2);
+        build();
+    }
+    void build(){
+        for(int i = n-1; i>=1; i--) tree[i] = tree[i<<1] + tree[i<<1|1];
+    }
+    void update(int idx, int ts, int te, int left, int right, int val){
+        if(left>right) return;
+        if(ts == left && te == right){ tree[idx].update(val); return;}
+        tree[idx].push_down(tree[idx<<1], tree[idx<<1|1]); //update to most current for backtrace reupdate
+        int tm = (ts+te)>>1;
+        if(left<=tm) update(idx<<1,ts,tm,left,min(right,tm),val);
+        if(right>tm) update(idx<<1|1,tm+1,te,max(tm+1,left),right,val);
+        tree[idx].pull_up(tree[idx<<1], tree[idx<<1|1]);
+    }
+    void update(int left, int right, int val){ update(1,0,n-1,left,right,val); }
+    Node query(int idx, int ts, int te, int left, int right){
+        if(left>right) return 0;
+        tree[idx].push_down(tree[idx<<1], tree[idx<<1|1]);
+        if(ts == left && te == right) return tree[idx];
+        int tm = (ts+te)>>1;
+        Node ll, rr;
+        if(left<=tm)
+            ll=query(idx<<1,ts,tm,left,min(right,tm));
+        if(right>tm)
+            rr=query(idx<<1|1,tm+1,te,max(tm+1,left),right);
+        return Node::merge(ll,rr);
+    }
+    int query(int left, int right){ return query(1,0,n-1,left,right).ans(); }
+};
+
+
+template<typename Node>
+struct segtreeSimple{
+    static llong pow_up(llong num){
+        for(llong i=0;i<32;i++) if(1<<i >= num) return 1<<i;
+        return -1;
+    }
+    vector<Node> tree;
+    llong n;
+    segtreeSimple(llong size){
+        n = pow_up(size);
+        tree = vector<Node>(n*2);
+        build();
+    }
+    void build(){
+        for(llong i = n-1; i>=1; i--) tree[i].pull_up(tree[i<<1], tree[i<<1|1]);
+    }
+    void update(llong idx, llong val){
+        tree[n+idx].update(val);
+        for(llong i = (n+idx)>>1; i >= 1; i>>=1) tree[i].pull_up(tree[i<<1], tree[i<<1|1]);
+    }
+    llong query(llong left, llong right){
+        Node ll, rr;
+        left+=n, right+=n;
+        for(;left<=right;left>>=1,right>>=1){
+            if(left&1) ll=Node::merge(ll,tree[left++]);
+            if(!(right&1)) rr=Node::merge(tree[right--],rr);
+            if(left==right) break; 
+        }
+        return Node::merge(ll,rr).ans();
+    }
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+segtreeRecurse<Node0> weights;
+segtreeSimple<Node0> kvals;
+segtreeSimple<Node1> klins;
+
+
 
 int n;
 
 vector<vector<pair<int,int>>> adj;
 vector<int> parent, depth, sizes, ins, outs, head, tail, ins2id;
 
-segtree<Node0> weights;
-segtree<Node0> kvals;
-segtree<Node1> klins;
 
 int t=0;
 
@@ -99,6 +261,35 @@ void find_centroid(int cur, int par, int cost){
     int wn = weights.get_val(ins[nc]);
     int ncost = costv + (tw-wn)*nd - wn*nd;
     find_centroid(nc,v,ncost);
+}
+
+
+void updateW(int cur, int addw){
+    while(true){
+        weights.update(ins[head[cur]], ins[head], addw);
+        if(parent[head[cur]] == cur) break; // reached root
+        cur=parent[head[cur]];
+    }
+}
+
+void updateK0(int cur, int addW){
+    int d = dist[cur];
+    cur = head[cur];
+    while(parent[cur]!=cur){
+        int pad = dist[parent[cur]];
+        kvals.update(ins[parent[cur]], addW*(d-pad));
+        cur = head[parent[cur]];
+    }
+}
+
+void updateK1(int cur, int addW){
+    int d = dist[cur];
+    cur = head[cur];
+    while(parent[cur]!=cur){
+        int pad = dist[parent[cur]];
+        klins.update(ins[parent[cur]], addW*(d-pad));
+        cur = head[parent[cur]];
+    }
 }
 
 
