@@ -31,45 +31,47 @@ using namespace std;
 #define MOD 1000000007
 
 template<typename Node>
-struct segtree{
-	static int pow_up(int num){
-		for(int i=0;i<65;i++) if(1<<i >= num) return 1<<i;
-		return -1;
-	}
-	vector<Node> tree;
-	int n;
-	segtree(int size){
-		n = pow_up(size);
-		tree = vector<Node>(n*2);
-		build();
-	}
-	void build(){
-		for(int i = n-1; i>=1; i--) tree[i] = tree[i<<1] + tree[i<<1|1];
-	}
-	void update(int idx, int ts, int te, int left, int right, int val){
-		if(left>right) return;
-		if(ts == left && te == right){ tree[idx].update(val); return;}
-		tree[idx].push_down(tree[idx<<1], tree[idx<<1|1]); //update to most current for backtrace reupdate
-		int tm = (ts+te)>>1;
-		if(left<=tm) update(idx<<1,ts,tm,left,min(right,tm),val);
-		if(right>tm) update(idx<<1|1,tm+1,te,max(tm+1,left),right,val);
-		tree[idx].pull_up(tree[idx<<1], tree[idx<<1|1]);
-	}
-	void update(int left, int right, int val){ update(1,0,n-1,left,right,val); }
-	Node query(int idx, int ts, int te, int left, int right){
-		if(left>right) return 0;
-		tree[idx].push_down(tree[idx<<1], tree[idx<<1|1]);
-		if(ts == left && te == right) return tree[idx];
-		int tm = (ts+te)>>1;
-		Node ll, rr;
-		if(left<=tm)
-			ll=query(idx<<1,ts,tm,left,min(right,tm));
-		if(right>tm)
-			rr=query(idx<<1|1,tm+1,te,max(tm+1,left),right);
-		return Node::merge(ll,rr);
-	}
-	int query(int left, int right){ return query(1,0,n-1,left,right).ans(); }
+struct segtreeRecurse{
+    static int pow_up(int num){
+        for(int i=0;i<65;i++) if(1<<i >= num) return 1<<i;
+        return -1;
+    }
+    vector<Node> tree;
+    int n;
+    segtreeRecurse(){}
+    segtreeRecurse(int size){
+        n = pow_up(size);
+        tree = vector<Node>(n*2);
+        build();
+    }
+    void build(){
+        for(int i = n-1; i>=1; i--) tree[i].pull_up(tree[i<<1], tree[i<<1|1]);
+    }
+    void update(int idx, int ts, int te, int left, int right, int val){
+        if(left>right) return;
+        if(ts == left && te == right){ tree[idx].update(val); return;}
+        tree[idx].push_down(tree[idx<<1], tree[idx<<1|1]); //update to most current for backtrace reupdate
+        int tm = (ts+te)>>1;
+        if(left<=tm) update(idx<<1,ts,tm,left,min(right,tm),val);
+        if(right>tm) update(idx<<1|1,tm+1,te,max(tm+1,left),right,val);
+        tree[idx].pull_up(tree[idx<<1], tree[idx<<1|1]);
+    }
+    void update(int left, int right, int val){ update(1,0,n-1,left,right,val); }
+    Node query(int idx, int ts, int te, int loc){
+        if(left>right) return 0;
+        if(ts == loc && te == loc) return tree[idx];
+        tree[idx].push_down(tree[idx<<1], tree[idx<<1|1]);
+        int tm = (ts+te)>>1;
+        Node ll, rr;
+        if(loc<=tm)
+            ll=query(idx<<1,ts,tm,loc);
+        else
+            rr=query(idx<<1|1,tm+1,te,loc);
+        return Node::merge(ll,rr);
+    }
+    int get_val(int loc){ return query(1,0,n-1,loc).ans(); }
 };
+
 
 int main(){
     // ios_base::sync_with_stdio(0);
