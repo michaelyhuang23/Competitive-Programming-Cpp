@@ -19,16 +19,17 @@ int random(int st, int ed){
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	int n = 40, q = 2;
-	cout<<n<<" "<<q<<endl;
-	int w = 30;
-	for(int i=2;i<=n;i++){
-		int p = random(1, i-1);
-		cout<<p << " "<<i<<" "<< random(1,w)<<endl;
-	}
-
+	int n=200,q=200;
+	int R = (int)1e9;
+	cout<<n<<endl;
+	for(int i=0;i<n;i++) cout<<random(1,R)<<" ";
+	cout<<endl;
+	cout<<q<<endl;
 	for(int i=0;i<q;i++){
-		cout<<random(1,n)<<" "<<random(1,w)<<endl;
+		int l=random(0,n-1);
+		int r=random(0,n-1);
+		if(l>r) swap(l,r);
+		cout<<l<<" "<<r<<" "<<random(-R,R)<<endl;
 	}
 }
 
