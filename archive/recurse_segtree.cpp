@@ -57,19 +57,19 @@ struct segtreeRecurse{
         tree[idx].pull_up(tree[idx<<1], tree[idx<<1|1]);
     }
     void update(int left, int right, int val){ update(1,0,n-1,left,right,val); }
-    Node query(int idx, int ts, int te, int loc){
-        if(left>right) return 0;
-        if(ts == loc && te == loc) return tree[idx];
+    Node query(int idx, int ts, int te, int left, int right){
+        if(left>right) return Node();
+        if(ts == left && te == right) return tree[idx];
         tree[idx].push_down(tree[idx<<1], tree[idx<<1|1]);
         int tm = (ts+te)>>1;
         Node ll, rr;
-        if(loc<=tm)
-            ll=query(idx<<1,ts,tm,loc);
-        else
-            rr=query(idx<<1|1,tm+1,te,loc);
+        if(left<=tm)
+            ll=query(idx<<1,ts,tm,left,min(right,tm));
+        if(right>tm)
+            rr=query(idx<<1|1,tm+1,te,max(tm+1,left),right);
         return Node::merge(ll,rr);
     }
-    int get_val(int loc){ return query(1,0,n-1,loc).ans(); }
+    int query(int left, int right){ return query(1,0,n-1,left,right).ans(); }
 };
 
 
