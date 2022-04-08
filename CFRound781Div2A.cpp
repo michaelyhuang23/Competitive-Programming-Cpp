@@ -8,6 +8,8 @@ void solve(){
 	assert(n>=4);
 
 	cout<<n-3<<" "<<1<<" "<<1<<" "<<1<<endl;
+	assert(gcd(n-3,1) == lcm(1,1));
+	assert(n-3+1+1+1 == n);
 }
 
 int main(){
