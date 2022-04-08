@@ -72,7 +72,6 @@ struct segtreeRecurse{
     int query(int left, int right){ return query(1,0,n-1,left,right).ans(); }
 };
 
-
 int main(){
     // ios_base::sync_with_stdio(0);
     // cin.tie(0);

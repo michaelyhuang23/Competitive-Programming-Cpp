@@ -12,25 +12,29 @@ typedef long long llong;
 #define inf 1000000000
 #define print(x) cout<<x<<endl
 
-int random(int st, int ed){
+llong random(llong st, llong ed){
 	if(st==ed) return st;
 	return rand()%(ed-st+1)+st;
 }
 
 int main(int argc, char** argv){
 	srand(atoi(argv[1]));
-	int n=200,q=200;
-	int R = (int)1e9;
-	cout<<n<<endl;
-	for(int i=0;i<n;i++) cout<<random(1,R)<<" ";
-	cout<<endl;
-	cout<<q<<endl;
-	for(int i=0;i<q;i++){
-		int l=random(0,n-1);
-		int r=random(0,n-1);
-		if(l>r) swap(l,r);
-		cout<<l<<" "<<r<<" "<<random(-R,R)<<endl;
+	int n = 3, m = 1;
+	cout << n<<" "<<m+1 << endl;
+
+	for(int i=2;i<=n;i++){
+		int p = random(1, i-1);
+		cout<<p << " "<<i<<endl;
 	}
+
+	for(int i=0;i<m;i++){
+		cout<<"1 ";
+		int a = random(1,n);
+		int x = random(1,2);
+		cout<<a<<" "<<x<<endl;
+	}
+
+	cout<<"2 "<<random(1,n)<<endl;
 }
 
 
