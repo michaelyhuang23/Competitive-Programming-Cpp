@@ -24,13 +24,11 @@ void solve(){
 	for(int i=0;i<n;i++) cin >> arr[i];
 
 	unordered_map<int,int> counter;
+	counter.reserve(1024);
+	counter.max_load_factor(0.25);
 	for(int i=0;i<n;i++){
-		if(counter.find(arr[i]) == counter.end())
-			counter[arr[i]] = 1;
-		else
-			counter[arr[i]]++;
+		counter[arr[i]] += 1;
 	}
-
 	int maxc = 0;
 	for(auto& elem : counter){
 		maxc = max(maxc, elem.second);
