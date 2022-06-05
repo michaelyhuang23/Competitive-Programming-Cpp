@@ -6,14 +6,15 @@ typedef long long llong;
 #define mp make_pair
 #define inf 1000000000000000LL
 
-llong n, m;
+llong n, m, s, t;
 vector<vector<llong>> adj;
 vector<llong> to, weight, rev;
 vector<llong> level;
 vector<llong> curp;
 
+
 llong dfs(llong cur, llong minw){
-	if(cur == n-1) return minw;
+	if(cur == t) return minw;
 	for(int i=curp[cur]; i<adj[cur].size(); i++){
 		curp[cur] = i;
 		int ei = adj[cur][i];
@@ -39,25 +40,26 @@ bool bfs(llong st){
 			pq.push(to[ei]);
 		}
 	}
-	return level[n-1] < inf;
+	return level[t] < inf;
 }
 
 void max_flow(){
-	while(bfs(0)){
+	level = vector<llong>(n, inf);
+	while(bfs(s)){
 		llong minw = 0;
 		curp = vector<llong>(n, 0);
 		do{
-			minw = dfs(0, inf);
+			minw = dfs(s, inf);
 		}while(minw != 0);
 	}
 }
 
 void solve(){
-	cin >> n >> m;
+	cin >> n >> m >> s >> t; s--; t--;
 	adj = vector<vector<llong>>(n);
-	to = vector<llong>(m*4);
-	weight = vector<llong>(m*4);
-	rev = vector<llong>(m*4);
+	to = vector<llong>(m*2);
+	weight = vector<llong>(m*2);
+	rev = vector<llong>(m*2);
 
 	llong ei = -1;
 	
@@ -80,12 +82,11 @@ void solve(){
 	for(llong i=0;i<m;i++){
 		llong a, b, c; cin >> a >> b >> c; a--; b--;
 		add_edge(a, b, c);
-		add_edge(b, a, c);
 	}
 
 	max_flow();
 	llong total = 0;
-	for(llong ei : adj[n-1]) if(ei&1) total += weight[ei];
+	for(llong ei : adj[t]) if(ei&1) total += weight[ei];
 	cout<<total<<endl;
 }
 
