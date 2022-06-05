@@ -11,7 +11,7 @@ int counter = 0;
 struct DynamicSegtree{
     DynamicSegtree(){}
     void pull_up(int idx){
-        Node& leftNode, rightNode;
+        Node leftNode, rightNode;
         if(lefts[idx]!=-1) leftNode = nodes[lefts[idx]];
         if(rights[idx]!=-1) rightNode = nodes[rights[idx]];
         nodes[idx].pull_up(leftNode, rightNode);
@@ -35,7 +35,7 @@ struct DynamicSegtree{
         return Node::merge(leftNode, rightNode);
     }
     void update(int idx, int ll, int rr, int val, int ts=0, int te=RANGE){
-        if(loc==ts && loc==te){ nodes[idx].update(val); return; }
+        if(idx==ts && idx==te){ nodes[idx].update(val); return; }
         int tm = (ts+te)/2;
         push_down(idx);
         if(ll <= tm){

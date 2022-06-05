@@ -36,8 +36,6 @@ void solve(){
 		maxc = max(maxc, elem.second);
 	}
 
-	int rest = n - maxc;
-
 	cc = 0;
 	build(maxc, n);
 
